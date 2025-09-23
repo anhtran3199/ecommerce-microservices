@@ -14,7 +14,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
@@ -27,7 +26,16 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             "/api/products/active",
             "/api/products/category",
             "/api/products/search",
-            "/eureka"
+            "/eureka",
+            // Swagger endpoints
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/swagger-resources",
+            "/webjars",
+            "/user-service/v3/api-docs",
+            "/product-service/v3/api-docs",
+            "/order-service/v3/api-docs",
+            "/payment-service/v3/api-docs"
     );
 
     @Override

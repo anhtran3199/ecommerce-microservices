@@ -38,6 +38,34 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+# Swagger Configuration
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    filter: true
+    persist-authorization: true
+  packages-to-scan: com.ecommerce.product
+  paths-to-match: /api/**
+
+swagger:
+  api:
+    title: Product Service API
+    description: API Documentation for Product Management Service
+    version: 1.0.0
+    contact:
+      name: Development Team
+      email: dev@ecommerce.com
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+
 ---
 spring:
   config:

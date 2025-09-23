@@ -11,6 +11,10 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
         - id: user-service
           uri: lb://user-service
           predicates:
@@ -27,6 +31,35 @@ spring:
           uri: lb://payment-service
           predicates:
             - Path=/api/payments/**
+        # Swagger UI routes for services
+        - id: user-service-swagger
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/v3/api-docs/**
+          filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - RemoveRequestHeader=Authorization
+        - id: product-service-swagger
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/v3/api-docs/**
+          filters:
+            - RewritePath=/product-service/(?<segment>.*), /$\{segment}
+            - RemoveRequestHeader=Authorization
+        - id: order-service-swagger
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/v3/api-docs/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+            - RemoveRequestHeader=Authorization
+        - id: payment-service-swagger
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment-service/v3/api-docs/**
+          filters:
+            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+            - RemoveRequestHeader=Authorization
 
 logging:
   level:
@@ -47,6 +80,34 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
+
+# Swagger Configuration for Gateway
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    persist-authorization: true
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    filter: true
+    urls:
+      - name: User Service
+        url: /user-service/v3/api-docs
+      - name: Product Service
+        url: /product-service/v3/api-docs
+      - name: Order Service
+        url: /order-service/v3/api-docs
+      - name: Payment Service
+        url: /payment-service/v3/api-docs
+
+swagger:
+  api:
+    title: E-commerce Gateway API
+    description: Centralized API Documentation for E-commerce Microservices
+    version: 1.0.0
 
 ---
 spring:
