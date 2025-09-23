@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface OrderClient {
 
     @GetMapping("/api/orders/{id}")
-    OrderResponse getOrder(@PathVariable Long id);
+    OrderResponse getOrder(@PathVariable("id") Long id);
 
     @PutMapping("/api/orders/{id}/status")
-    OrderResponse updateOrderStatus(@PathVariable Long id, @RequestParam String status);
+    OrderResponse updateOrderStatus(@PathVariable("id") Long id, @RequestParam("status") String status);
 }

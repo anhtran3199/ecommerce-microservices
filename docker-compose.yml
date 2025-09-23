@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   postgres-user:
     image: postgres:15
@@ -11,6 +10,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_user_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d userdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - elk-network
 
@@ -25,6 +31,13 @@ services:
       - "5433:5432"
     volumes:
       - postgres_product_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d productdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - elk-network
 
@@ -39,6 +52,13 @@ services:
       - "5434:5432"
     volumes:
       - postgres_order_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d orderdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - elk-network
 
@@ -53,6 +73,13 @@ services:
       - "5435:5432"
     volumes:
       - postgres_payment_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d paymentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     networks:
       - elk-network
 
@@ -61,8 +88,16 @@ services:
     container_name: eureka-server
     ports:
       - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      logstash:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8761/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 60s
+      retries: 3
+      start_period: 120s
     networks:
       - elk-network
 
@@ -83,12 +118,13 @@ services:
     build: ./user-service
     container_name: user-service
     depends_on:
-      - postgres-user
+      - postgres-product
       - eureka-server
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user:5432/userdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
     networks:
       - elk-network
 
@@ -99,9 +135,10 @@ services:
       - postgres-product
       - eureka-server
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product:5432/productdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
     networks:
       - elk-network
 
@@ -112,9 +149,10 @@ services:
       - postgres-order
       - eureka-server
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5432/orderdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
     networks:
       - elk-network
 
@@ -124,11 +162,11 @@ services:
     depends_on:
       - postgres-payment
       - eureka-server
-      - logstash
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-payment:5432/paymentdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
     networks:
       - elk-network
 
@@ -138,7 +176,7 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
     ports:
@@ -146,6 +184,13 @@ services:
       - "9300:9300"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     networks:
       - elk-network
 
@@ -161,9 +206,17 @@ services:
       - "5000:5000/udp"
       - "9600:9600"
     environment:
-      - "LS_JAVA_OPTS=-Xmx1g -Xms1g"
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9600/_node/stats || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
     networks:
       - elk-network
 
@@ -184,6 +237,7 @@ services:
     image: docker.elastic.co/beats/filebeat:8.11.0
     container_name: filebeat
     user: root
+    command: --strict.perms=false
     volumes:
       - ./elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -192,6 +246,7 @@ services:
     depends_on:
       - elasticsearch
       - logstash
+    restart: unless-stopped
     networks:
       - elk-network
 
