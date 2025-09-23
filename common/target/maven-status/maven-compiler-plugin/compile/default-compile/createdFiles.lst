@@ -1,3 +1,0 @@
-com\ecommerce\common\entity\BaseEntity.class
-com\ecommerce\common\config\JpaAuditingConfig.class
-com\ecommerce\common\config\AuditorAwareImpl.class

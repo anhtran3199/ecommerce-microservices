@@ -18,6 +18,7 @@
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <jjwt.version>0.12.3</jjwt.version>
         <lombok.version>1.18.30</lombok.version>
+        <liquibase.version>4.24.0</liquibase.version>
     </properties>
 
     <modules>
@@ -76,6 +77,11 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

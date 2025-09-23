@@ -1,4 +1,0 @@
-com\ecommerce\gateway\security\SecurityConfig.class
-com\ecommerce\gateway\ApiGatewayApplication.class
-com\ecommerce\gateway\security\JwtAuthenticationFilter.class
-com\ecommerce\gateway\security\JwtTokenProvider.class
