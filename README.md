@@ -383,5 +383,4 @@ Trong Kibana, bạn có thể:
 
 ### Database Migration
 - Sử dụng Flyway hoặc Liquibase
-- Thay đổi `ddl-auto` từ `create-drop` thành `validate` trong production#   e c o m m e r c e - m i c r o s e r v i c e s  
- 
+- Thay đổi `ddl-auto` từ `create-drop` thành `validate` trong production
