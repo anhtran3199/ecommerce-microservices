@@ -10,10 +10,11 @@ import javax.crypto.SecretKey;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt.secret:mySecretKey}")
+    @Value("${app.jwt.secret:myVerySecretKeyForJWTTokenGenerationThatShouldBeAtLeast256Bits}")
     private String jwtSecret;
 
     private SecretKey getSigningKey() {
+        // Use HS384 to match user-service
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 

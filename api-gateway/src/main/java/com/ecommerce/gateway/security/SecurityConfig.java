@@ -18,20 +18,7 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/api/auth/**").permitAll()
-                        .pathMatchers("/api/products/active", "/api/products/category/**", "/api/products/search").permitAll()
-                        .pathMatchers("/eureka/**").permitAll()
-                        .pathMatchers("/actuator/**").permitAll()
-                        // Swagger UI endpoints
-                        .pathMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
-                        .pathMatchers("/v3/api-docs/**", "/swagger-resources/**").permitAll()
-                        .pathMatchers("/webjars/**").permitAll()
-                        // Service-specific swagger endpoints
-                        .pathMatchers("/user-service/v3/api-docs/**").permitAll()
-                        .pathMatchers("/product-service/v3/api-docs/**").permitAll()
-                        .pathMatchers("/order-service/v3/api-docs/**").permitAll()
-                        .pathMatchers("/payment-service/v3/api-docs/**").permitAll()
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()  // Let JWT filter handle authentication
                 )
                 .build();
     }
