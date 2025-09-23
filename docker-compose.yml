@@ -118,7 +118,7 @@ services:
     build: ./user-service
     container_name: user-service
     depends_on:
-      - postgres-product
+      - postgres-user
       - eureka-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user:5432/userdb
