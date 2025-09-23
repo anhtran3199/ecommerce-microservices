@@ -1,0 +1,10 @@
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\client\ProductClient.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\client\ProductResponse.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\controller\OrderController.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\entity\Order.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\entity\OrderItem.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\entity\OrderStatus.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\OrderServiceApplication.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\repository\OrderRepository.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\security\SecurityConfig.java
+C:\Users\admin\Desktop\project\pet-project\Microservices\order-service\src\main\java\com\ecommerce\order\service\OrderService.java

@@ -1,0 +1,18 @@
+{
+  "objects": [
+    {
+      "attributes": {
+        "title": "ecommerce-logs-*",
+        "timeFieldName": "@timestamp",
+        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"service\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"microservice\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"log_level\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"message\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":false},{\"name\":\"log_message\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":false},{\"name\":\"thread\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"logger\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"environment\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true},{\"name\":\"project\",\"type\":\"string\",\"searchable\":true,\"aggregatable\":true}]"
+      },
+      "id": "ecommerce-logs-*",
+      "type": "index-pattern",
+      "references": [],
+      "migrationVersion": {
+        "index-pattern": "7.11.0"
+      }
+    }
+  ],
+  "version": "7.11.0"
+}

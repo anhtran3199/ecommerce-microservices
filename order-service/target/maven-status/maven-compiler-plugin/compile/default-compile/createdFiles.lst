@@ -1,0 +1,12 @@
+com\ecommerce\order\security\SecurityConfig.class
+com\ecommerce\order\service\OrderService.class
+com\ecommerce\order\client\ProductResponse.class
+com\ecommerce\order\entity\Order$OrderBuilder.class
+com\ecommerce\order\entity\OrderItem.class
+com\ecommerce\order\entity\OrderItem$OrderItemBuilder.class
+com\ecommerce\order\client\ProductClient.class
+com\ecommerce\order\entity\OrderStatus.class
+com\ecommerce\order\entity\Order.class
+com\ecommerce\order\OrderServiceApplication.class
+com\ecommerce\order\controller\OrderController.class
+com\ecommerce\order\repository\OrderRepository.class
