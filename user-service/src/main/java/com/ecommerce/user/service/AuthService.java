@@ -5,7 +5,7 @@ import com.ecommerce.user.dto.LoginRequest;
 import com.ecommerce.user.dto.SignUpRequest;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.repository.UserRepository;
-import com.ecommerce.user.security.JwtTokenProvider;
+import com.ecommerce.common.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

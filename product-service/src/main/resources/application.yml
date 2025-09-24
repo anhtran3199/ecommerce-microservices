@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: product-service
+  config:
+    import: classpath:application-common.yml
   datasource:
     url: jdbc:postgresql://localhost:5433/productdb
     username: postgres

@@ -1,9 +1,10 @@
-package com.ecommerce.user.security;
+package com.ecommerce.common.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,7 +13,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt.secret:mySecretKey}")
+    @Value("${app.jwt.secret:myVerySecretKeyForJWTTokenGenerationThatShouldBeAtLeast256Bits}")
     private String jwtSecret;
 
     @Value("${app.jwt.expiration:86400000}")
@@ -23,18 +24,21 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 
-        Date expiryDate = new Date(System.currentTimeMillis() + jwtExpirationMs);
+        // For user-service specific implementation
+        if (userPrincipal.getClass().getSimpleName().equals("UserPrincipal")) {
+            try {
+                Long userId = (Long) userPrincipal.getClass().getMethod("getId").invoke(userPrincipal);
+                String email = (String) userPrincipal.getClass().getMethod("getEmail").invoke(userPrincipal);
+                return generateTokenFromUsername(userPrincipal.getUsername(), userId, email);
+            } catch (Exception e) {
+                // Fallback to basic token generation
+                return generateTokenFromUsername(userPrincipal.getUsername(), 0L, "");
+            }
+        }
 
-        return Jwts.builder()
-                .subject(Long.toString(userPrincipal.getId()))
-                .claim("username", userPrincipal.getUsername())
-                .claim("email", userPrincipal.getEmail())
-                .issuedAt(new Date())
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
+        return generateTokenFromUsername(userPrincipal.getUsername(), 0L, "");
     }
 
     public String generateTokenFromUsername(String username, Long userId, String email) {
@@ -68,6 +72,16 @@ public class JwtTokenProvider {
                 .getPayload();
 
         return claims.get("username", String.class);
+    }
+
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get("email", String.class);
     }
 
     public boolean validateToken(String token) {
