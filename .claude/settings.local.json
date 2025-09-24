@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(mvn clean:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker start:*)"
     ],
     "deny": [],
     "ask": []

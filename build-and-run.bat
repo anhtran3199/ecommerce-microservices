@@ -45,6 +45,6 @@ echo Starting Docker Compose...
 docker-compose up -d --build
 
 echo All services are starting up!
-echo Check logs with: docker-compose logs -f [service-name]
+docker compose ps -a
 
 pause
