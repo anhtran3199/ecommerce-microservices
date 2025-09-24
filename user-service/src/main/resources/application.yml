@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: user-service
+  config:
+    import: classpath:application-common.yml
   datasource:
     url: jdbc:postgresql://localhost:5432/userdb
     username: postgres
@@ -70,6 +72,35 @@ swagger:
     license:
       name: Apache 2.0
       url: https://www.apache.org/licenses/LICENSE-2.0
+
+# Management endpoints for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers,retries
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+    redis:
+      enabled: true
+    db:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
 
 ---
 spring:

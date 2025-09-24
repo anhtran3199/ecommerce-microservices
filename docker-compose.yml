@@ -19,6 +19,14 @@ services:
       start_period: 20s
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   postgres-product:
     image: postgres:15
@@ -40,6 +48,14 @@ services:
       start_period: 20s
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   postgres-order:
     image: postgres:15
@@ -61,6 +77,14 @@ services:
       start_period: 20s
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   postgres-payment:
     image: postgres:15
@@ -82,6 +106,40 @@ services:
       start_period: 20s
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - elk-network
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   eureka-server:
     build: ./eureka-server
@@ -100,6 +158,14 @@ services:
       start_period: 120s
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 768M
+        reservations:
+          cpus: '0.25'
+          memory: 384M
 
   api-gateway:
     build: ./api-gateway
@@ -113,6 +179,14 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   user-service:
     build: ./user-service
@@ -120,13 +194,31 @@ services:
     depends_on:
       - postgres-user
       - eureka-server
+      - redis
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user:5432/userdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
-      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=30
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
+      - SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT=300000
+      - SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=1200000
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_TIMEOUT=2000ms
+      - SPRING_REDIS_JEDIS_POOL_MAX_ACTIVE=20
+      - SPRING_REDIS_JEDIS_POOL_MAX_IDLE=10
+      - SPRING_REDIS_JEDIS_POOL_MIN_IDLE=5
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   product-service:
     build: ./product-service
@@ -134,13 +226,25 @@ services:
     depends_on:
       - postgres-product
       - eureka-server
+      - redis
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product:5432/productdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
-      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=30
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
+      - SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT=300000
+      - SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=1200000
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   order-service:
     build: ./order-service
@@ -148,13 +252,25 @@ services:
     depends_on:
       - postgres-order
       - eureka-server
+      - redis
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5432/orderdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
-      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=30
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
+      - SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT=300000
+      - SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=1200000
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   payment-service:
     build: ./payment-service
@@ -162,13 +278,25 @@ services:
     depends_on:
       - postgres-payment
       - eureka-server
+      - redis
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-payment:5432/paymentdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
-      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=30
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
+      - SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT=300000
+      - SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=1200000
     networks:
       - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   # ELK Stack
   elasticsearch:
@@ -261,3 +389,4 @@ volumes:
   postgres_payment_data:
   elasticsearch_data:
   filebeat_data:
+  redis_data:
