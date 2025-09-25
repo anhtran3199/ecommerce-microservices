@@ -81,4 +81,9 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         orderRepository.delete(order);
     }
+
+    @Transactional
+    public Order saveOrder(Order order) {
+        return orderRepository.save(order);
+    }
 }

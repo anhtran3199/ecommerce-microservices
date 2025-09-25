@@ -1,5 +1,6 @@
 package com.ecommerce.product.controller;
 
+import com.ecommerce.product.dto.ProductResponse;
 import com.ecommerce.product.entity.Product;
 import com.ecommerce.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -31,10 +32,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable(name = "id") Long id) {
         Optional<Product> product = productService.getProductById(id);
-        return product.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        if (product.isPresent()) {
+            Product p = product.get();
+            ProductResponse response = new ProductResponse(
+                p.getId(),
+                p.getName(),
+                p.getPrice(),
+                p.getStockQuantity()
+            );
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/category/{category}")

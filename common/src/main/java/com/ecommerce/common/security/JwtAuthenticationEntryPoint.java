@@ -1,4 +1,4 @@
-package com.ecommerce.user.security;
+package com.ecommerce.common.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
