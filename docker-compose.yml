@@ -141,6 +141,36 @@ services:
           cpus: '0.25'
           memory: 256M
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # AMQP port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics check_port_connectivity"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - elk-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
   eureka-server:
     build: ./eureka-server
     container_name: eureka-server
@@ -197,6 +227,7 @@ services:
       - postgres-user
       - eureka-server
       - redis
+      - rabbitmq
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user:5432/userdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
@@ -211,6 +242,10 @@ services:
       - SPRING_REDIS_JEDIS_POOL_MAX_ACTIVE=20
       - SPRING_REDIS_JEDIS_POOL_MAX_IDLE=10
       - SPRING_REDIS_JEDIS_POOL_MIN_IDLE=5
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=admin123
     networks:
       - elk-network
     deploy:
@@ -259,14 +294,17 @@ services:
       - postgres-order
       - eureka-server
       - redis
+      - rabbitmq
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5432/orderdb
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=20000
       - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=30
       - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
-      - SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT=300000
-      - SPRING_DATASOURCE_HIKARI_MAX_LIFETIME=1200000
     networks:
       - elk-network
     deploy:
@@ -398,3 +436,4 @@ volumes:
   elasticsearch_data:
   filebeat_data:
   redis_data:
+  rabbitmq_data:

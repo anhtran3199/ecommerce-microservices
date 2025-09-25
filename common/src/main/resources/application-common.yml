@@ -1,6 +1,22 @@
 # Common configuration for all microservices
-# Redis Configuration
 spring:
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 30s
+    requested-heartbeat: 30s
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1s
+        max-attempts: 3
+        max-interval: 10s
+        multiplier: 2
+  # Redis Configuration
   data:
     redis:
       timeout: 2000ms
@@ -77,3 +93,15 @@ app:
   jwt:
     secret: myVerySecretKeyForJWTTokenGenerationThatShouldBeAtLeast256Bits
     expiration: 86400000
+
+---
+# Docker profile configuration
+spring:
+  config:
+    activate:
+      on-profile: docker
+  rabbitmq:
+    host: rabbitmq
+  data:
+    redis:
+      host: redis
