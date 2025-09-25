@@ -1,25 +1,22 @@
 package com.ecommerce.order.command;
 
 import com.ecommerce.common.cqrs.Command;
+import com.ecommerce.order.dto.CreateOrderRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CreateOrderCommand extends Command {
 
     private Long userId;
-    private Long productId;
-    private Integer quantity;
-    private BigDecimal totalAmount;
+    private List<CreateOrderRequest> orderItems;
 
-    public CreateOrderCommand(Long userId, Long productId, Integer quantity, BigDecimal totalAmount) {
+    public CreateOrderCommand(Long userId, List<CreateOrderRequest> orderItems) {
         super();
         this.userId = userId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.totalAmount = totalAmount;
+        this.orderItems = orderItems;
     }
 }

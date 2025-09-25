@@ -51,13 +51,11 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+	public ResponseEntity<?> createOrder(@Valid @RequestBody List<CreateOrderRequest> requests) {
 		try {
 			CreateOrderCommand command = new CreateOrderCommand(
 					SecurityUtil.getCurrentUserId(),
-					request.getProductId(),
-					request.getQuantity(),
-					request.getTotalAmount()
+					requests
 			);
 
 			commandBus.send(command);
@@ -71,7 +69,7 @@ public class OrderController {
 	}
 
 	@PutMapping("/{id}/status")
-	public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+	public ResponseEntity<?> updateOrderStatus(@PathVariable("id") Long id, @RequestParam String status) {
 		try {
 			Order updatedOrder = orderService.updateOrderStatus(id, status);
 			return ResponseEntity.ok(updatedOrder);
@@ -82,7 +80,7 @@ public class OrderController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+	public ResponseEntity<?> deleteOrder(@PathVariable("id") Long id) {
 		try {
 			orderService.deleteOrder(id);
 			return ResponseEntity.ok().build();

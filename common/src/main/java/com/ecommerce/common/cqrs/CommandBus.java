@@ -43,18 +43,50 @@ public class CommandBus {
     private <T extends Command> CommandHandler<T> findHandler(Class<T> commandType) {
         Map<String, CommandHandler> handlerBeans = applicationContext.getBeansOfType(CommandHandler.class);
 
+        // Debug logging
+        System.out.println("Found " + handlerBeans.size() + " CommandHandler beans:");
+        for (String beanName : handlerBeans.keySet()) {
+            System.out.println("  - " + beanName + ": " + handlerBeans.get(beanName).getClass().getName());
+        }
+
         for (CommandHandler handler : handlerBeans.values()) {
-            Type[] genericInterfaces = handler.getClass().getGenericInterfaces();
+            Class<?> handlerClass = handler.getClass();
+            System.out.println("Checking handler: " + handlerClass.getName());
+
+            // Check direct interfaces
+            Type[] genericInterfaces = handlerClass.getGenericInterfaces();
             for (Type genericInterface : genericInterfaces) {
+                System.out.println("  Interface: " + genericInterface);
                 if (genericInterface instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
                     Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                    if (typeArguments.length > 0 && typeArguments[0].equals(commandType)) {
-                        return handler;
+                    if (typeArguments.length > 0) {
+                        System.out.println("    Type argument: " + typeArguments[0] + ", Looking for: " + commandType);
+                        if (typeArguments[0].equals(commandType)) {
+                            System.out.println("    MATCH FOUND!");
+                            return handler;
+                        }
                     }
                 }
             }
+
+            // Also check superclass interfaces (in case of inheritance)
+            Class<?> superClass = handlerClass.getSuperclass();
+            while (superClass != null && superClass != Object.class) {
+                Type[] superInterfaces = superClass.getGenericInterfaces();
+                for (Type genericInterface : superInterfaces) {
+                    if (genericInterface instanceof ParameterizedType) {
+                        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+                        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                        if (typeArguments.length > 0 && typeArguments[0].equals(commandType)) {
+                            return handler;
+                        }
+                    }
+                }
+                superClass = superClass.getSuperclass();
+            }
         }
+        System.out.println("No handler found for command: " + commandType.getName());
         return null;
     }
 }
