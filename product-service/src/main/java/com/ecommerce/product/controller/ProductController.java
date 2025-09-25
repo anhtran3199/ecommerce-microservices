@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category) {
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable("category") String category) {
         List<Product> products = productService.getProductsByCategory(category);
         return ResponseEntity.ok(products);
     }
@@ -72,7 +72,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @Valid @RequestBody Product productDetails) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @Valid @RequestBody Product productDetails) {
         try {
             Product updatedProduct = productService.updateProduct(id, productDetails);
             return ResponseEntity.ok(updatedProduct);
@@ -82,7 +82,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
         try {
             productService.deleteProduct(id);
             return ResponseEntity.ok().build();
@@ -92,7 +92,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/stock")
-    public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam Integer quantity) {
+    public ResponseEntity<?> updateStock(@PathVariable("id") Long id, @RequestParam Integer quantity) {
         try {
             Product updatedProduct = productService.updateStock(id, quantity);
             return ResponseEntity.ok(updatedProduct);

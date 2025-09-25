@@ -32,13 +32,13 @@ public class PaymentController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Payment>> getPaymentsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Payment>> getPaymentsByUserId(@PathVariable("userId") Long userId) {
         List<Payment> payments = paymentService.getPaymentsByUserId(userId);
         return ResponseEntity.ok(payments);
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<Payment> getPaymentByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<Payment> getPaymentByOrderId(@PathVariable("orderId") Long orderId) {
         Optional<Payment> payment = paymentService.getPaymentByOrderId(orderId);
         return payment.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -55,7 +55,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable("id") Long id, @RequestParam String status) {
         try {
             Payment updatedPayment = paymentService.updatePaymentStatus(id, status);
             return ResponseEntity.ok(updatedPayment);
