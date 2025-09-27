@@ -15,7 +15,24 @@ spring:
         initial-interval: 1s
         max-attempts: 3
         max-interval: 10s
-        multiplier: 2
+        multiplier: 2.0
+      mandatory: true
+      receive-timeout: 5s
+      reply-timeout: 5s
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 2s
+          max-attempts: 3
+          multiplier: 1.5
+          max-interval: 30s
+        default-requeue-rejected: false
+        acknowledge-mode: auto
+        prefetch: 10
+        concurrency: 5
+        max-concurrency: 10
+        missing-queues-fatal: false
   # Redis Configuration
   data:
     redis:
