@@ -2,7 +2,7 @@ package com.ecommerce.order.controller;
 
 import com.ecommerce.common.cqrs.CommandBus;
 import com.ecommerce.common.cqrs.QueryBus;
-import com.ecommerce.common.util.SecurityUtil;
+import com.ecommerce.common.util.UserContextUtil;
 import com.ecommerce.order.command.CreateOrderCommand;
 import com.ecommerce.order.dto.CreateOrderRequest;
 import com.ecommerce.order.entity.Order;
@@ -54,7 +54,7 @@ public class OrderController {
 	public ResponseEntity<?> createOrder(@Valid @RequestBody List<CreateOrderRequest> requests) {
 		try {
 			CreateOrderCommand command = new CreateOrderCommand(
-					SecurityUtil.getCurrentUserId(),
+					UserContextUtil.getCurrentUserId(),
 					requests
 			);
 

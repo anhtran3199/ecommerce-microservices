@@ -7,5 +7,8 @@
 
     <include file="db/changelog/v1.0/01-create-users-table.xml"/>
     <include file="db/changelog/db.changelog-002.xml"/>
+    <include file="db/changelog/v1.1/01-create-rbac-tables.xml"/>
+    <include file="db/changelog/v1.1/02-insert-default-rbac-data.xml"/>
+    <include file="db/changelog/v1.1/03-add-audit-columns-fix.xml"/>
 
 </databaseChangeLog>
