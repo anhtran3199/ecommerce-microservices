@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="insert-default-permissions" author="rbac-system">
+        <!-- User Management Permissions -->
+        <insert tableName="permissions">
+            <column name="name">CREATE_USER</column>
+            <column name="description">Create new user</column>
+            <column name="resource">USER</column>
+            <column name="action">CREATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">READ_USER</column>
+            <column name="description">Read user information</column>
+            <column name="resource">USER</column>
+            <column name="action">READ</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">UPDATE_USER</column>
+            <column name="description">Update user information</column>
+            <column name="resource">USER</column>
+            <column name="action">UPDATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">DELETE_USER</column>
+            <column name="description">Delete user</column>
+            <column name="resource">USER</column>
+            <column name="action">DELETE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- Product Management Permissions -->
+        <insert tableName="permissions">
+            <column name="name">CREATE_PRODUCT</column>
+            <column name="description">Create new product</column>
+            <column name="resource">PRODUCT</column>
+            <column name="action">CREATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">READ_PRODUCT</column>
+            <column name="description">Read product information</column>
+            <column name="resource">PRODUCT</column>
+            <column name="action">READ</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">UPDATE_PRODUCT</column>
+            <column name="description">Update product information</column>
+            <column name="resource">PRODUCT</column>
+            <column name="action">UPDATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">DELETE_PRODUCT</column>
+            <column name="description">Delete product</column>
+            <column name="resource">PRODUCT</column>
+            <column name="action">DELETE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- Order Management Permissions -->
+        <insert tableName="permissions">
+            <column name="name">CREATE_ORDER</column>
+            <column name="description">Create new order</column>
+            <column name="resource">ORDER</column>
+            <column name="action">CREATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">READ_ORDER</column>
+            <column name="description">Read order information</column>
+            <column name="resource">ORDER</column>
+            <column name="action">READ</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">UPDATE_ORDER</column>
+            <column name="description">Update order information</column>
+            <column name="resource">ORDER</column>
+            <column name="action">UPDATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">DELETE_ORDER</column>
+            <column name="description">Delete order</column>
+            <column name="resource">ORDER</column>
+            <column name="action">DELETE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- Payment Management Permissions -->
+        <insert tableName="permissions">
+            <column name="name">CREATE_PAYMENT</column>
+            <column name="description">Create new payment</column>
+            <column name="resource">PAYMENT</column>
+            <column name="action">CREATE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="name">READ_PAYMENT</column>
+            <column name="description">Read payment information</column>
+            <column name="resource">PAYMENT</column>
+            <column name="action">READ</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- RBAC Management Permissions -->
+        <insert tableName="permissions">
+            <column name="name">MANAGE_ROLES</column>
+            <column name="description">Manage roles and permissions</column>
+            <column name="resource">RBAC</column>
+            <column name="action">MANAGE</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-default-roles" author="rbac-system">
+        <!-- Admin Role -->
+        <insert tableName="roles">
+            <column name="name">ADMIN</column>
+            <column name="description">System administrator with full access</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- Manager Role -->
+        <insert tableName="roles">
+            <column name="name">MANAGER</column>
+            <column name="description">Business manager with limited admin access</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+
+        <!-- Customer Role -->
+        <insert tableName="roles">
+            <column name="name">CUSTOMER</column>
+            <column name="description">Regular customer with basic access</column>
+            <column name="created_at" valueDate="NOW()"/>
+            <column name="updated_at" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="assign-permissions-to-admin-role" author="rbac-system">
+        <!-- Admin gets all permissions -->
+        <sql>
+            INSERT INTO role_permissions (role_id, permission_id)
+            SELECT r.id, p.id
+            FROM roles r, permissions p
+            WHERE r.name = 'ADMIN';
+        </sql>
+    </changeSet>
+
+    <changeSet id="assign-permissions-to-manager-role" author="rbac-system">
+        <!-- Manager gets product and order management permissions -->
+        <sql>
+            INSERT INTO role_permissions (role_id, permission_id)
+            SELECT r.id, p.id
+            FROM roles r, permissions p
+            WHERE r.name = 'MANAGER'
+            AND p.name IN ('CREATE_PRODUCT', 'READ_PRODUCT', 'UPDATE_PRODUCT', 'DELETE_PRODUCT',
+                          'READ_ORDER', 'UPDATE_ORDER', 'READ_PAYMENT', 'READ_USER');
+        </sql>
+    </changeSet>
+
+    <changeSet id="assign-permissions-to-customer-role" author="rbac-system">
+        <!-- Customer gets basic read and order creation permissions -->
+        <sql>
+            INSERT INTO role_permissions (role_id, permission_id)
+            SELECT r.id, p.id
+            FROM roles r, permissions p
+            WHERE r.name = 'CUSTOMER'
+            AND p.name IN ('READ_PRODUCT', 'CREATE_ORDER', 'READ_ORDER', 'CREATE_PAYMENT');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

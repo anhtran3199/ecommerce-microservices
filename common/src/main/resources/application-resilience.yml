@@ -1,0 +1,102 @@
+resilience4j:
+  retry:
+    instances:
+      product-service:
+        max-attempts: 3
+        wait-duration: 500ms
+        exponential-backoff-multiplier: 1.5
+        retry-exceptions:
+          - feign.RetryableException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$BadGateway
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+          - java.net.SocketTimeoutException
+          - java.net.ConnectException
+      order-service:
+        max-attempts: 3
+        wait-duration: 500ms
+        exponential-backoff-multiplier: 1.5
+        retry-exceptions:
+          - feign.RetryableException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$BadGateway
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+          - java.net.SocketTimeoutException
+          - java.net.ConnectException
+      payment-service:
+        max-attempts: 3
+        wait-duration: 500ms
+        exponential-backoff-multiplier: 1.5
+        retry-exceptions:
+          - feign.RetryableException
+          - feign.FeignException$InternalServerError
+          - feign.FeignException$BadGateway
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$GatewayTimeout
+          - java.net.SocketTimeoutException
+          - java.net.ConnectException
+
+  circuit-breaker:
+    instances:
+      product-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        permitted-number-of-calls-in-half-open-state: 3
+      order-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        permitted-number-of-calls-in-half-open-state: 3
+      payment-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        permitted-number-of-calls-in-half-open-state: 3
+
+  timelimiter:
+    instances:
+      product-service:
+        timeout-duration: 3s
+      order-service:
+        timeout-duration: 3s
+      payment-service:
+        timeout-duration: 5s
+
+feign:
+  hystrix:
+    enabled: false
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 2000
+        read-timeout: 5000
+        logger-level: basic
+      product-service:
+        connect-timeout: 2000
+        read-timeout: 3000
+        logger-level: full
+      order-service:
+        connect-timeout: 2000
+        read-timeout: 3000
+        logger-level: full
+      payment-service:
+        connect-timeout: 2000
+        read-timeout: 5000
+        logger-level: full
+
+logging:
+  level:
+    com.ecommerce: DEBUG
+    feign: DEBUG
+    io.github.resilience4j: DEBUG

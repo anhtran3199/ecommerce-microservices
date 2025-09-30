@@ -2,7 +2,12 @@ package com.ecommerce.common.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import feign.Retryer;
+import io.github.resilience4j.feign.FeignDecorators;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -12,6 +17,23 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Configuration
 public class FeignConfig {
+
+    @Autowired
+    private RetryConfig feignRetryConfig;
+
+    @Bean
+    public Retryer feignRetryer() {
+        return new Retryer.Default(100, 1000, 3);
+    }
+
+    @Bean
+    public FeignDecorators feignDecorators() {
+        return FeignDecorators.builder()
+                .withRetry(
+                    Retry.of("feign-retry", feignRetryConfig)
+                )
+                .build();
+    }
 
     @Bean
     public RequestInterceptor requestInterceptor() {

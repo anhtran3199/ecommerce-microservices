@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "order-service")
+@FeignClient(
+    name = "order-service",
+    configuration = com.ecommerce.common.config.FeignConfig.class,
+    fallback = OrderClientFallback.class
+)
 public interface OrderClient {
 
     @GetMapping("/api/orders/{id}")
